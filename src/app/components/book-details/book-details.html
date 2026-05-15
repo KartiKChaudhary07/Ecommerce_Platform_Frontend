@@ -1,0 +1,42 @@
+<div class="container section" *ngIf="!loading && book">
+  <div class="book-detail-wrapper">
+    <div class="book-visual fade-in">
+      <div class="image-container glass-card">
+        <img [src]="book.imageUrl || 'assets/book-placeholder.jpg'" [alt]="book.title">
+      </div>
+    </div>
+
+    <div class="book-content fade-in">
+      <div class="badge">{{ book.category }}</div>
+      <h1>{{ book.title }}</h1>
+      <p class="author">by <span>{{ book.author }}</span></p>
+
+      <div class="rating">
+        <!-- Mock rating -->
+        <span class="stars">★★★★★</span>
+        <span class="count">(124 Reviews)</span>
+      </div>
+
+      <div class="price-section">
+        <span class="price">₹{{ book.price }}</span>
+        <span class="stock-status" [class.low]="book.stock < 5">
+          {{ book.stock > 0 ? book.stock + ' units available' : 'Out of Stock' }}
+        </span>
+      </div>
+
+      <p class="description">{{ book.description || 'No description available for this masterpiece. Dive into a world of imagination and discover the secrets hidden within these pages.' }}</p>
+
+      <div class="actions" *ngIf="book.stock > 0">
+        <div class="quantity-picker">
+          <button (click)="quantity = quantity > 1 ? quantity - 1 : 1">-</button>
+          <span>{{ quantity }}</span>
+          <button (click)="quantity = quantity + 1">+</button>
+        </div>
+        <button (click)="addToCart()" class="btn-primary flex-1">Add to Cart</button>
+        <button (click)="addToWishlist()" class="btn-secondary" [disabled]="wishlistBusy">Wishlist</button>
+      </div>
+      
+      <button *ngIf="book.stock <= 0" class="btn-primary w-full disabled" disabled>Out of Stock</button>
+    </div>
+  </div>
+</div>

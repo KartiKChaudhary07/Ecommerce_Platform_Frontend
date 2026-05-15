@@ -1,0 +1,39 @@
+<div class="auth-wrapper">
+  <div class="auth-card glass-card fade-in">
+    <div class="auth-header">
+      <h2>Welcome Back</h2>
+      <p>Log in to your BookNest account</p>
+    </div>
+
+    <form (submit)="onSubmit()" #loginForm="ngForm">
+      <div *ngIf="error" class="error-msg">{{ error }}</div>
+      
+      <div class="input-group">
+        <label>Email Address</label>
+        <input type="email" name="email" [(ngModel)]="credentials.email" required placeholder="john@example.com">
+      </div>
+
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" name="password" [(ngModel)]="credentials.password" required placeholder="••••••••">
+      </div>
+
+      <button type="submit" class="btn-primary w-full" [disabled]="loading">
+        {{ loading ? 'Logging in...' : 'Sign In' }}
+      </button>
+    </form>
+
+    <div class="divider">
+      <span>or continue with</span>
+    </div>
+
+    <button (click)="googleLogin()" class="btn-google" title="Requires Google Cloud Console setup">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google">
+      Sign in with Google
+    </button>
+
+    <div class="auth-footer">
+      Don't have an account? <a routerLink="/register">Register</a>
+    </div>
+  </div>
+</div>

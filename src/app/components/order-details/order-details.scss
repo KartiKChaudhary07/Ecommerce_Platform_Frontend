@@ -1,0 +1,28 @@
+.section {
+  padding: 2rem 0;
+}
+
+.panel {
+  padding: 1rem;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #334155;
+}
+
+.mt {
+  margin-top: 1rem;
+}
+
+.btn-secondary {
+  background: #334155;
+  color: #f8fafc;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1rem;
+  font-weight: 600;
+}
+

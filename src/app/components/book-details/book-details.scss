@@ -1,0 +1,115 @@
+.book-detail-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 4rem;
+  padding: 2rem 0;
+}
+
+.image-container {
+  padding: 2rem;
+  border-radius: 2rem;
+  
+  img {
+    width: 100%;
+    border-radius: 1rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.book-content {
+  .badge {
+    display: inline-block;
+    background: var(--glass);
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--glass-border);
+  }
+
+  h1 {
+    font-size: 3.5rem;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+
+  .author {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    
+    span { color: var(--text-main); font-weight: 600; }
+  }
+
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    
+    .stars { color: #f59e0b; font-size: 1.25rem; }
+    .count { color: var(--text-muted); font-size: 0.9rem; }
+  }
+
+  .price-section {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+    
+    .price { font-size: 2.5rem; font-weight: 800; color: var(--text-main); }
+    .stock-status {
+      font-weight: 600;
+      color: var(--accent);
+      &.low { color: #f59e0b; }
+    }
+  }
+
+  .description {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 3rem;
+    line-height: 1.8;
+  }
+
+  .actions {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .flex-1 { flex: 1; justify-content: center; }
+
+  .quantity-picker {
+    display: flex;
+    align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    
+    button {
+      padding: 0 1.5rem;
+      font-size: 1.25rem;
+      background: transparent;
+      color: white;
+      
+      &:hover { background: var(--glass); }
+    }
+    
+    span {
+      padding: 0 1rem;
+      font-weight: 700;
+      min-width: 3rem;
+      text-align: center;
+    }
+  }
+}
+
+@media (max-width: 968px) {
+  .book-detail-wrapper {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}

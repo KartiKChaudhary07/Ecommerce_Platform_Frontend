@@ -1,0 +1,90 @@
+<div class="container section">
+  <h1 class="font-heading">Your Shopping Bag</h1>
+  <div class="checkout-banner success" *ngIf="checkoutMessage">
+    <span>{{ checkoutMessage }}</span>
+    <button type="button" (click)="checkoutMessage = ''">Dismiss</button>
+  </div>
+  <div class="checkout-banner error" *ngIf="checkoutError">
+    <span>{{ checkoutError }}</span>
+    <button type="button" (click)="checkoutError = ''">Dismiss</button>
+  </div>
+
+  <div *ngIf="loading" class="loader">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!loading && (!cart || cart.items.length === 0)" class="empty-state glass-card fade-in">
+    <p>Your bag is empty. Start adding some masterpieces!</p>
+    <a routerLink="/" class="btn-primary">Browse Books</a>
+  </div>
+
+  <div class="cart-grid" *ngIf="!loading && cart?.items.length > 0">
+    <div class="cart-items">
+      <div class="cart-item glass-card fade-in" *ngFor="let item of cart.items">
+        <div class="item-info">
+          <h3>{{ getBookTitle(item.bookId) }}</h3>
+          <p class="price">₹{{ item.price }}</p>
+        </div>
+        <div class="item-actions">
+          <div class="quantity-picker">
+            <button (click)="updateQuantity(item.bookId, item.quantity - 1)">-</button>
+            <span>{{ item.quantity }}</span>
+            <button (click)="updateQuantity(item.bookId, item.quantity + 1)">+</button>
+          </div>
+          <button (click)="removeItem(item.bookId)" class="btn-remove">Remove</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cart-summary glass-card fade-in">
+      <h3>Summary</h3>
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span>₹{{ getTotal() }}</span>
+      </div>
+      <div class="summary-row">
+        <span>Shipping</span>
+        <span class="free">FREE</span>
+      </div>
+      <div class="divider"></div>
+      <div class="summary-row total">
+        <span>Total</span>
+        <span>₹{{ getTotal() }}</span>
+      </div>
+      <button (click)="checkout()" class="btn-primary w-full mt-2">Checkout Now</button>
+    </div>
+  </div>
+</div>
+
+<div class="checkout-modal-backdrop" *ngIf="showCheckoutModal" (click)="closeCheckoutModal()"></div>
+<div class="checkout-modal glass-card" *ngIf="showCheckoutModal">
+  <h3>Complete Cart Checkout</h3>
+  <p class="sub-text">Total payable: ₹{{ getTotal() }}</p>
+  <p class="sub-text">Books: {{ getOrderedBookNames() }}</p>
+
+  <div class="form-group">
+    <label>Delivery Address</label>
+    <select [(ngModel)]="selectedAddressId">
+      <option [ngValue]="null" disabled>Select address</option>
+      <option *ngFor="let address of checkoutAddresses" [ngValue]="address.id">
+        {{ address.fullName }} - {{ address.addressLine1 }}, {{ address.city }}
+      </option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Payment Method</label>
+    <select [(ngModel)]="selectedPaymentMode">
+      <option value="COD">Cash on Delivery</option>
+      <option value="WALLET">Wallet</option>
+      <option value="ONLINE">Online (Razorpay)</option>
+    </select>
+  </div>
+
+  <div class="actions-row">
+    <button type="button" class="btn-secondary btn-sm" (click)="closeCheckoutModal()" [disabled]="checkoutBusy">Cancel</button>
+    <button type="button" class="btn-primary btn-sm" (click)="placeCartOrder()" [disabled]="checkoutBusy">
+      {{ checkoutBusy ? 'Placing...' : 'Place Order' }}
+    </button>
+  </div>
+</div>

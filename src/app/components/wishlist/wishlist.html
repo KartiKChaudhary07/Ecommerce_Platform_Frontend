@@ -1,0 +1,27 @@
+<div class="container section">
+  <h2>Your Wishlist</h2>
+
+  <div *ngIf="loading" class="glass-card panel">Loading wishlist...</div>
+
+  <div *ngIf="!loading && items.length === 0" class="glass-card panel">
+    <p>Your wishlist is empty.</p>
+    <a routerLink="/" class="btn-primary">Browse books</a>
+  </div>
+
+  <div *ngIf="!loading && items.length > 0" class="grid">
+    <div class="glass-card card" *ngFor="let item of items">
+      <div class="info">
+        <div class="title">{{ booksById.get(item.bookId)?.title || ('Book #' + item.bookId) }}</div>
+        <div class="meta">
+          <span>{{ booksById.get(item.bookId)?.author }}</span>
+          <span *ngIf="booksById.get(item.bookId)?.price">₹{{ booksById.get(item.bookId)?.price }}</span>
+        </div>
+      </div>
+      <div class="actions">
+        <a class="btn-secondary" [routerLink]="['/book', item.bookId]">View</a>
+        <button class="btn-danger" (click)="remove(item.bookId)">Remove</button>
+      </div>
+    </div>
+  </div>
+</div>
+

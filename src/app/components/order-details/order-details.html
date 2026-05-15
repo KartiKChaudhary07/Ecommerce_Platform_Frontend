@@ -1,0 +1,23 @@
+<div class="container section">
+  <h2>Order Details</h2>
+
+  <div *ngIf="loading" class="glass-card panel">Loading order...</div>
+
+  <div *ngIf="!loading && !order" class="glass-card panel">
+    <p>Order not found.</p>
+    <a routerLink="/orders" class="btn-primary">Back to orders</a>
+  </div>
+
+  <div *ngIf="!loading && order" class="glass-card panel">
+    <div class="row"><span>Order ID</span><strong>#{{ order.id }}</strong></div>
+    <div class="row"><span>Status</span><strong>{{ order.status }}</strong></div>
+    <div class="row"><span>Total Amount</span><strong>₹{{ order.totalAmount }}</strong></div>
+    <div class="row"><span>Payment Mode</span><strong>{{ order.paymentMode }}</strong></div>
+    <div class="row" *ngIf="order.deliveryAddress"><span>Delivery Address</span><strong>{{ order.deliveryAddress }}</strong></div>
+
+    <div class="mt">
+      <a routerLink="/orders" class="btn-secondary">Back</a>
+    </div>
+  </div>
+</div>
+

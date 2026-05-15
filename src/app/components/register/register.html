@@ -1,0 +1,35 @@
+<div class="auth-wrapper">
+  <div class="auth-card glass-card fade-in">
+    <div class="auth-header">
+      <h2>Create Account</h2>
+      <p>Join the BookNest community</p>
+    </div>
+
+    <form (submit)="onSubmit()" #registerForm="ngForm">
+      <div *ngIf="error" class="error-msg">{{ error }}</div>
+      
+      <div class="input-group">
+        <label>Full Name</label>
+        <input type="text" name="name" [(ngModel)]="user.name" required placeholder="John Doe">
+      </div>
+
+      <div class="input-group">
+        <label>Email Address</label>
+        <input type="email" name="email" [(ngModel)]="user.email" required placeholder="john@example.com">
+      </div>
+
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" name="password" [(ngModel)]="user.password" required placeholder="••••••••">
+      </div>
+
+      <button type="submit" class="btn-primary w-full" [disabled]="loading">
+        {{ loading ? 'Creating Account...' : 'Sign Up' }}
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      Already have an account? <a routerLink="/login">Login</a>
+    </div>
+  </div>
+</div>

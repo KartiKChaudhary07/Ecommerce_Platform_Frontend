@@ -1,0 +1,211 @@
+<div class="container section">
+  <h2>Admin Dashboard</h2>
+
+  <div class="tabs">
+    <button (click)="selectedTab = 'books'" [class.active]="selectedTab === 'books'">Books</button>
+    <button (click)="selectedTab = 'inventory'" [class.active]="selectedTab === 'inventory'">Inventory</button>
+    <button (click)="selectedTab = 'orders'" [class.active]="selectedTab === 'orders'">Orders</button>
+    <button (click)="selectedTab = 'users'" [class.active]="selectedTab === 'users'">Users</button>
+    <button (click)="selectedTab = 'analytics'" [class.active]="selectedTab === 'analytics'">Analytics</button>
+    <button (click)="selectedTab = 'reviews'" [class.active]="selectedTab === 'reviews'">Reviews</button>
+  </div>
+
+  <div *ngIf="loading">Loading admin data...</div>
+
+  <section *ngIf="selectedTab === 'books'" class="glass-card panel">
+    <h3>{{ editingBookId ? 'Update Book' : 'Add New Book' }}</h3>
+    <form class="book-form" (ngSubmit)="submitBook()">
+      <input [(ngModel)]="newBook.title" name="title" placeholder="Title" required />
+      <input [(ngModel)]="newBook.author" name="author" placeholder="Author" required />
+      <input [(ngModel)]="newBook.price" name="price" placeholder="Price" type="number" min="0" required />
+      <input [(ngModel)]="newBook.stock" name="stock" placeholder="Stock" type="number" min="0" required />
+      <input [(ngModel)]="newBook.category" name="category" placeholder="Category" required />
+      <input [(ngModel)]="newBook.imageUrl" name="imageUrl" placeholder="Cover Image URL" />
+      <textarea [(ngModel)]="newBook.description" name="description" placeholder="Description"></textarea>
+      <div class="row-actions">
+        <button class="btn-primary" type="submit">{{ editingBookId ? 'Update Book' : 'Add Book' }}</button>
+        <button type="button" class="btn-secondary" (click)="resetBookForm()" *ngIf="editingBookId">Cancel</button>
+      </div>
+    </form>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Stock</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let book of books">
+            <td>{{ book.title }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.category }}</td>
+            <td>{{ book.stock }}</td>
+            <td class="row-actions">
+              <button class="btn-secondary" (click)="editBook(book)">Edit</button>
+              <button class="btn-danger" (click)="removeBook(book.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section *ngIf="selectedTab === 'inventory'" class="glass-card panel">
+    <h3>Inventory Management</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Book</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let book of books">
+            <td>{{ book.title }}</td>
+            <td>{{ book.stock }}</td>
+            <td>
+              <span [class.out]="book.stock <= 0">{{ book.stock <= 0 ? 'OUT OF STOCK' : 'IN STOCK' }}</span>
+            </td>
+            <td>
+              <button class="btn-danger" (click)="markOutOfStock(book)" [disabled]="book.stock <= 0">Flag Out Of Stock</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section *ngIf="selectedTab === 'orders'" class="glass-card panel">
+    <h3>Order Management</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>User</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Update</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of orders">
+            <td>#{{ order.id }}</td>
+            <td>{{ order.userId }}</td>
+            <td>{{ order.totalAmount }}</td>
+            <td>{{ order.status }}</td>
+            <td>
+              <select #statusSelect>
+                <option value="PLACED">PLACED</option>
+                <option value="PROCESSING">PROCESSING</option>
+                <option value="SHIPPED">SHIPPED</option>
+                <option value="DELIVERED">DELIVERED</option>
+                <option value="CANCELLED">CANCELLED</option>
+              </select>
+              <button class="btn-secondary" (click)="changeOrderStatus(order.id, statusSelect.value)">Save</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section *ngIf="selectedTab === 'users'" class="glass-card panel">
+    <h3>User Management</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.role }}</td>
+            <td>{{ user.enabled ? 'ACTIVE' : 'SUSPENDED' }}</td>
+            <td class="row-actions">
+              <button class="btn-secondary" (click)="toggleUserStatus(user)">
+                {{ user.enabled ? 'Suspend' : 'Activate' }}
+              </button>
+              <button class="btn-danger" (click)="removeUser(user.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section *ngIf="selectedTab === 'analytics'" class="glass-card panel">
+    <h3>Platform Analytics</h3>
+    <div class="metrics">
+      <div class="metric-card">
+        <h4>Total Sales</h4>
+        <p>{{ analytics.totalSales | number:'1.2-2' }}</p>
+      </div>
+      <div class="metric-card">
+        <h4>Total Orders</h4>
+        <p>{{ analytics.totalOrders }}</p>
+      </div>
+      <div class="metric-card">
+        <h4>Out of Stock</h4>
+        <p>{{ analytics.outOfStock }}</p>
+      </div>
+    </div>
+
+    <h4>Top Selling Books (by stock depletion)</h4>
+    <ul>
+      <li *ngFor="let book of analytics.topSellingBooks">{{ book.title }} (Stock: {{ book.stock }})</li>
+    </ul>
+
+    <h4>Category Breakdown</h4>
+    <ul>
+      <li *ngFor="let category of analytics.categoryBreakdown">{{ category.category }}: {{ category.count }}</li>
+    </ul>
+  </section>
+
+  <section *ngIf="selectedTab === 'reviews'" class="glass-card panel">
+    <h3>Review Moderation</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Book</th>
+            <th>User</th>
+            <th>Rating</th>
+            <th>Comment</th>
+            <th>Status</th>
+            <th>Moderation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let review of reviews">
+            <td>{{ review.bookId }}</td>
+            <td>{{ review.userId }}</td>
+            <td>{{ review.rating }}</td>
+            <td>{{ review.comment }}</td>
+            <td>{{ review.approved ? 'APPROVED' : 'PENDING/REJECTED' }}</td>
+            <td class="row-actions">
+              <button class="btn-secondary" (click)="updateReviewApproval(review, true)">Approve</button>
+              <button class="btn-secondary" (click)="updateReviewApproval(review, false)">Reject</button>
+              <button class="btn-danger" (click)="removeReview(review.id)">Remove</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

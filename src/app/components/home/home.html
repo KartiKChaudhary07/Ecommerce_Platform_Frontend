@@ -1,0 +1,97 @@
+<div class="hero">
+  <div class="container hero-content fade-in">
+    <h1>Find Your Next <span class="text-gradient">Favorite Story</span></h1>
+    <p>bopoksd</p>
+    <p>Discover thousands of books, from classics to new releases. Premium reading experience at your fingertips.</p>
+    
+    <div class="search-bar">
+      <input type="text" [(ngModel)]="searchKeyword" (keyup.enter)="onSearch()" placeholder="Search by title, author, or category...">
+      <button (click)="onSearch()" class="btn-primary">Search</button>
+    </div>
+  </div>
+</div>
+
+<div class="container section">
+  <div class="checkout-banner success" *ngIf="checkoutMessage">
+    <span>{{ checkoutMessage }}</span>
+    <button type="button" (click)="checkoutMessage = ''">Dismiss</button>
+  </div>
+  <div class="checkout-banner error" *ngIf="checkoutError">
+    <span>{{ checkoutError }}</span>
+    <button type="button" (click)="checkoutError = ''">Dismiss</button>
+  </div>
+
+  <div class="section-header">
+    <h2>Featured Collection</h2>
+    <div class="filters">
+      <!-- Filter chips could go here -->
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loader">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!loading && books.length === 0" class="empty-state">
+    <p>No books found matching your criteria.</p>
+  </div>
+
+  <div class="book-grid" *ngIf="!loading">
+    <div class="book-card glass-card fade-in" *ngFor="let book of books" [routerLink]="['/book', book.id]">
+      <div class="book-image">
+        <img [src]="book.imageUrl || 'assets/book-placeholder.jpg'" [alt]="book.title">
+        <div class="category-badge">{{ book.category }}</div>
+      </div>
+      <div class="book-info">
+        <h3 class="title">{{ book.title }}</h3>
+        <p class="author">{{ book.author }}</p>
+        <div class="book-footer">
+          <span class="price">₹{{ book.price }}</span>
+          <div class="actions">
+            <button (click)="buyNow($event, book)" class="btn-primary btn-sm" [disabled]="book.stock <= 0">
+              Buy Now
+            </button>
+            <button (click)="addToWishlist($event, book)" class="btn-primary btn-sm" [disabled]="wishlistBusyId === book.id">
+              Wishlist
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="checkout-modal-backdrop" *ngIf="showCheckoutModal" (click)="closeCheckoutModal()"></div>
+<div class="checkout-modal glass-card" *ngIf="showCheckoutModal">
+  <h3>Complete Your Order</h3>
+  <p *ngIf="buyNowBook" class="sub-text">
+    Placing order for <strong>{{ buyNowBook.title }}</strong> (₹{{ buyNowBook.price }})
+  </p>
+
+  <div class="form-group">
+    <label>Delivery Address</label>
+    <select [(ngModel)]="selectedAddressId">
+      <option [ngValue]="null" disabled>Select address</option>
+      <option *ngFor="let address of checkoutAddresses" [ngValue]="address.id">
+        {{ address.fullName }} - {{ address.addressLine1 }}, {{ address.city }}
+      </option>
+    </select>
+    <small *ngIf="selectedAddressId">{{ getSelectedAddressPreview() }}</small>
+  </div>
+
+  <div class="form-group">
+    <label>Payment Method</label>
+    <select [(ngModel)]="selectedPaymentMode">
+      <option value="COD">Cash on Delivery</option>
+      <option value="WALLET">Wallet</option>
+      <option value="ONLINE">Online (Razorpay)</option>
+    </select>
+  </div>
+
+  <div class="actions-row">
+    <button type="button" class="btn-secondary btn-sm" (click)="closeCheckoutModal()" [disabled]="checkoutBusy">Cancel</button>
+    <button type="button" class="btn-primary btn-sm" (click)="placeBuyNowOrder()" [disabled]="checkoutBusy">
+      {{ checkoutBusy ? 'Placing...' : 'Place Order' }}
+    </button>
+  </div>
+</div>

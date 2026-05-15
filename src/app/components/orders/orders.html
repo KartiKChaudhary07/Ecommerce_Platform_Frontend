@@ -1,0 +1,37 @@
+<div class="container section fade-in">
+  <div class="section-header">
+    <h2>Your Orders</h2>
+  </div>
+
+  <div *ngIf="loading" class="loader">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!loading && orders.length === 0" class="empty-state glass-card">
+    <p>You haven't placed any orders yet.</p>
+    <button routerLink="/" class="btn-primary">Browse Books</button>
+  </div>
+
+  <div class="orders-list" *ngIf="!loading && orders.length > 0">
+    <a class="order-card glass-card" *ngFor="let order of orders" [routerLink]="['/orders', order.id]">
+      <div class="order-header">
+        <div class="order-meta">
+          <span class="order-id">{{ order.orderedBooks || 'Book order placed' }}</span>
+          <span class="order-date">Payment: {{ order.paymentMode }}</span>
+        </div>
+        <div class="order-status" [attr.data-status]="order.status">
+          {{ order.status }}
+        </div>
+      </div>
+
+      <div class="order-footer">
+        <span class="total-label">Total Amount</span>
+        <span class="total-amount">₹{{ order.totalAmount }}</span>
+      </div>
+      <div class="order-footer" *ngIf="order.deliveryAddress">
+        <span class="total-label">Delivery Address</span>
+        <span class="total-amount">{{ order.deliveryAddress }}</span>
+      </div>
+    </a>
+  </div>
+</div>

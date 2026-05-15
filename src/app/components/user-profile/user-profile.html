@@ -1,0 +1,171 @@
+<div class="container section">
+  <h2>Your Profile</h2>
+
+  <div *ngIf="loading" class="glass-card panel">Loading profile...</div>
+
+  <div *ngIf="!loading" class="grid">
+    <section class="glass-card panel">
+      <h3>Personal details</h3>
+
+      <div *ngIf="message" class="alert success">{{ message }}</div>
+      <div *ngIf="error" class="alert error">{{ error }}</div>
+
+      <form (ngSubmit)="saveProfile()" class="form">
+        <div class="field">
+          <label>Name</label>
+          <input [(ngModel)]="profile.name" name="name" required />
+        </div>
+
+        <div class="field">
+          <label>Email (readonly)</label>
+          <input [(ngModel)]="profile.email" name="email" disabled />
+        </div>
+
+        <div class="field">
+          <label>Phone</label>
+          <input [(ngModel)]="profile.phone" name="phone" placeholder="+91..." />
+        </div>
+
+        <div class="field">
+          <label>Preferred payment</label>
+          <select [(ngModel)]="profile.defaultPaymentMode" name="defaultPaymentMode">
+            <option value="COD">Cash on Delivery</option>
+            <option value="WALLET">Wallet</option>
+          </select>
+        </div>
+
+        <div class="field span-2">
+          <label>Address Line 1</label>
+          <input [(ngModel)]="profile.addressLine1" name="addressLine1" />
+        </div>
+
+        <div class="field span-2">
+          <label>Address Line 2</label>
+          <input [(ngModel)]="profile.addressLine2" name="addressLine2" />
+        </div>
+
+        <div class="field">
+          <label>City</label>
+          <input [(ngModel)]="profile.city" name="city" />
+        </div>
+
+        <div class="field">
+          <label>State</label>
+          <input [(ngModel)]="profile.state" name="state" />
+        </div>
+
+        <div class="field">
+          <label>Postal Code</label>
+          <input [(ngModel)]="profile.postalCode" name="postalCode" />
+        </div>
+
+        <div class="field">
+          <label>Country</label>
+          <input [(ngModel)]="profile.country" name="country" />
+        </div>
+
+        <button class="btn-primary" type="submit" [disabled]="saving">Save changes</button>
+      </form>
+    </section>
+
+    <section class="glass-card panel">
+      <h3>Change password</h3>
+
+      <form (ngSubmit)="changePassword()" class="form one-col">
+        <div class="field">
+          <label>Current password</label>
+          <input [(ngModel)]="passwordForm.currentPassword" name="currentPassword" type="password" required />
+        </div>
+
+        <div class="field">
+          <label>New password</label>
+          <input [(ngModel)]="passwordForm.newPassword" name="newPassword" type="password" required minlength="6" />
+        </div>
+
+        <div class="field">
+          <label>Confirm new password</label>
+          <input [(ngModel)]="passwordForm.confirmPassword" name="confirmPassword" type="password" required minlength="6" />
+        </div>
+
+        <button class="btn-secondary" type="submit" [disabled]="saving">Update password</button>
+      </form>
+    </section>
+  </div>
+
+  <div *ngIf="!loading" class="grid single">
+    <section class="glass-card panel">
+      <h3>Saved addresses</h3>
+
+      <div class="address-grid" *ngIf="addresses.length > 0">
+        <div class="address-card" *ngFor="let a of addresses">
+          <div class="address-top">
+            <div class="name">
+              <strong>{{ a.fullName }}</strong>
+              <span class="badge" *ngIf="a.isDefault">Default</span>
+            </div>
+            <div class="actions">
+              <button class="btn-secondary" (click)="editAddress(a)">Edit</button>
+              <button class="btn-secondary" (click)="makeDefault(a.id)" [disabled]="a.isDefault">Make default</button>
+              <button class="btn-danger" (click)="deleteAddress(a.id)">Delete</button>
+            </div>
+          </div>
+          <div class="muted">{{ a.phone }}</div>
+          <div>{{ a.addressLine1 }}</div>
+          <div *ngIf="a.addressLine2">{{ a.addressLine2 }}</div>
+          <div class="muted">{{ a.city }}, {{ a.state }} - {{ a.postalCode }}, {{ a.country }}</div>
+        </div>
+      </div>
+
+      <div *ngIf="addresses.length === 0" class="muted">No saved addresses yet.</div>
+
+      <h4 class="mt"> {{ editingAddressId ? 'Update address' : 'Add new address' }} </h4>
+      <form (ngSubmit)="saveAddress()" class="form">
+        <div class="field">
+          <label>Full name</label>
+          <input [(ngModel)]="addressForm.fullName" name="fullName" required />
+        </div>
+        <div class="field">
+          <label>Phone</label>
+          <input [(ngModel)]="addressForm.phone" name="addressPhone" required />
+        </div>
+        <div class="field span-2">
+          <label>Address Line 1</label>
+          <input [(ngModel)]="addressForm.addressLine1" name="a1" required />
+        </div>
+        <div class="field span-2">
+          <label>Address Line 2</label>
+          <input [(ngModel)]="addressForm.addressLine2" name="a2" />
+        </div>
+        <div class="field">
+          <label>City</label>
+          <input [(ngModel)]="addressForm.city" name="city2" required />
+        </div>
+        <div class="field">
+          <label>State</label>
+          <input [(ngModel)]="addressForm.state" name="state2" required />
+        </div>
+        <div class="field">
+          <label>Postal code</label>
+          <input [(ngModel)]="addressForm.postalCode" name="postal2" required />
+        </div>
+        <div class="field">
+          <label>Country</label>
+          <input [(ngModel)]="addressForm.country" name="country2" required />
+        </div>
+
+        <div class="field span-2 checkbox">
+          <label>
+            <input type="checkbox" [(ngModel)]="addressForm.isDefault" name="isDefault" />
+            Set as default
+          </label>
+        </div>
+
+        <div class="span-2 row">
+          <button class="btn-primary" type="submit" [disabled]="saving">Save address</button>
+          <button class="btn-secondary" type="button" (click)="resetAddressForm()" *ngIf="editingAddressId">Cancel</button>
+        </div>
+      </form>
+    </section>
+  </div>
+</div>
+

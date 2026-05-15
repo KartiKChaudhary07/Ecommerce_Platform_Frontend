@@ -1,0 +1,29 @@
+<nav class="navbar">
+  <div class="container nav-content">
+    <a routerLink="/" class="logo">
+      <span class="logo-accent">Book</span>Nest
+    </a>
+
+    <div class="nav-links">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+      <a routerLink="/cart" routerLinkActive="active" *ngIf="authService.isLoggedIn()">Cart</a>
+      <a routerLink="/orders" routerLinkActive="active" *ngIf="authService.isLoggedIn()">Orders</a>
+      <a routerLink="/profile" routerLinkActive="active" *ngIf="authService.isLoggedIn()">Profile</a>
+      <a routerLink="/wishlist" routerLinkActive="active" *ngIf="authService.isLoggedIn()">Wishlist</a>
+      <a routerLink="/admin" routerLinkActive="active" *ngIf="authService.isAdmin()">Admin</a>
+    </div>
+
+    <div class="auth-buttons">
+      <ng-container *ngIf="!authService.isLoggedIn(); else userProfile">
+        <a routerLink="/login" class="nav-link">Login</a>
+        <a routerLink="/register" class="btn-primary">Register</a>
+      </ng-container>
+      <ng-template #userProfile>
+        <div class="user-info">
+          <span class="username">{{ (authService.currentUser | async)?.name }}</span>
+          <button (click)="logout()" class="btn-logout">Logout</button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</nav>
